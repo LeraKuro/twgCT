@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <script src="js/alpine.min.js" defer></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="js/datepicker.js"></script>
+    <style>
+      [x-cloak] {
+        display: none;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-black text-white"
+    x-data="{
+    showAuth: true,
+    showDeny: false,
+    showInquiry: false,
+    showOL: false,
+    showReAuth: false,
+    showPR: false,
+    showTB: false,
+    showSR: false
+}"
+  >
+    <nav class="bg-white shadow dark:bg-gray-800">
+      <div
+        class="container flex items-center justify-center p-6 mx-auto text-gray-600 capitalize dark:text-gray-300"
+      >
+        <a
+          x-on:click="showAuth = !showAuth, showDeny = false, showInquiry = false, showOL = false, showReAuth = false, showPR = false, showTB = false, showSR = false"
+          x-bind:class="showAuth ? 'text-gray-800 transition-colors duration-300 transform dark:text-gray-200 border-b-2 border-blue-500 mx-1.5 sm:mx-6' : 'border-b-2 border-transparent hover:text-gray-800 transition-colors duration-300 transform dark:hover:text-gray-200 hover:border-blue-500 mx-1.5 sm:mx-6'"
+          >Auth</a
+        >
+
+        <a
+          x-on:click="showDeny = !showDeny, showAuth = false, showInquiry = false, showOL = false, showReAuth = false, showPR = false, showTB = false, showSR = false"
+          x-bind:class="showDeny ? 'text-gray-800 transition-colors duration-300 transform dark:text-gray-200 border-b-2 border-blue-500 mx-1.5 sm:mx-6' : 'border-b-2 border-transparent hover:text-gray-800 transition-colors duration-300 transform dark:hover:text-gray-200 hover:border-blue-500 mx-1.5 sm:mx-6'"
+          >Deny</a
+        >
+
+        <a
+          x-on:click="showInquiry = !showInquiry, showAuth = false, showDeny = false, showOL = false, showReAuth = false, showPR = false, showTB = false, showSR = false"
+          x-bind:class="showInquiry ? 'text-gray-800 transition-colors duration-300 transform dark:text-gray-200 border-b-2 border-blue-500 mx-1.5 sm:mx-6' : 'border-b-2 border-transparent hover:text-gray-800 transition-colors duration-300 transform dark:hover:text-gray-200 hover:border-blue-500 mx-1.5 sm:mx-6'"
+          >Inquiry</a
+        >
+
+        <a
+          x-on:click="showOL = !showOL, showAuth = false, showDeny = false, showInquiry = false, showReAuth = false, showPR = false, showTB = false, showSR = false"
+          x-bind:class="showOL ? 'text-gray-800 transition-colors duration-300 transform dark:text-gray-200 border-b-2 border-blue-500 mx-1.5 sm:mx-6' : 'border-b-2 border-transparent hover:text-gray-800 transition-colors duration-300 transform dark:hover:text-gray-200 hover:border-blue-500 mx-1.5 sm:mx-6'"
+          >Over Limit</a
+        >
+
+        <a
+          x-on:click="showReAuth = !showReAuth, showAuth = false, showDeny = false, showInquiry = false, showOL = false, showPR = false, showTB = false, showSR = false"
+          x-bind:class="showReAuth ? 'text-gray-800 transition-colors duration-300 transform dark:text-gray-200 border-b-2 border-blue-500 mx-1.5 sm:mx-6' : 'border-b-2 border-transparent hover:text-gray-800 transition-colors duration-300 transform dark:hover:text-gray-200 hover:border-blue-500 mx-1.5 sm:mx-6'"
+          >Re-Auth</a
+        >
+
+        <a
+          x-on:click="showPR = !showPR, showAuth = false, showDeny = false, showInquiry = false, showOL = false, showReAuth = false, showTB = false, showSR = false"
+          x-bind:class="showPR ? 'text-gray-800 transition-colors duration-300 transform dark:text-gray-200 border-b-2 border-blue-500 mx-1.5 sm:mx-6' : 'border-b-2 border-transparent hover:text-gray-800 transition-colors duration-300 transform dark:hover:text-gray-200 hover:border-blue-500 mx-1.5 sm:mx-6'"
+          >Pending Review</a
+        >
+
+        <a
+          x-on:click="showSR = !showSR, showAuth = false, showDeny = false, showInquiry = false, showOL = false, showReAuth = false, showTB = false, showPR = false"
+          x-bind:class="showSR ? 'text-gray-800 transition-colors duration-300 transform dark:text-gray-200 border-b-2 border-blue-500 mx-1.5 sm:mx-6' : 'border-b-2 border-transparent hover:text-gray-800 transition-colors duration-300 transform dark:hover:text-gray-200 hover:border-blue-500 mx-1.5 sm:mx-6'"
+          >Sent to Review</a
+        >
+
+        <a
+          x-on:click="showTB = !showTB, showAuth = false, showDeny = false, showInquiry = false, showOL = false, showReAuth = false, showSR = false, showPR = false"
+          x-bind:class="showTB ? 'text-gray-800 transition-colors duration-300 transform dark:text-gray-200 border-b-2 border-blue-500 mx-1.5 sm:mx-6' : 'border-b-2 border-transparent hover:text-gray-800 transition-colors duration-300 transform dark:hover:text-gray-200 hover:border-blue-500 mx-1.5 sm:mx-6'"
+          >Tie Back</a
+        >
+      </div>
+    </nav>
+    <div class="container h-full bg-black mx-auto mt-6">
+      <!--Auth-->
+      <div
+        id="auth"
+        x-show="showAuth"
+        x-data="{ 
+            auths: [], 
+            denys: [], 
+            reasons: [], 
+            addressable: '', 
+            notAddressable: '', 
+            dreasons: '', 
+            rental: 'None',
+            caller: '',
+            an: '',
+            dccc: false,
+            ccmt: false,
+            laborG: 'Alldata',
+            partG: 'C&K',
+            vl: false,
+            vp: false,
+            diag: false,
+        }"
+      >
+        <button
+          x-on:click="dccc = !dccc"
+          x-bind:class="dccc ? 'bg-blue-600' : ''"
+          class="px-6 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-900 rounded-md hover:bg-blue-500"
+        >
+          CCC & P&L
+        </button>
+        <button
+          x-on:click="ccmt = !ccmt"
+          x-bind:class="ccmt ? 'bg-blue-600' : ''"
+          class="px-6 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-900 rounded-md hover:bg-blue-500"
+        >
+          CCMT
+        </button>
+        <button
+          x-on:click="vl = !vl"
+          x-bind:class="vl ? 'bg-blue-600' : ''"
+          class="px-6 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-900 rounded-md hover:bg-blue-500"
+        >
+          Verified Labor
+        </button>
+        <button
+          x-on:click="vp = !vp"
+          x-bind:class="vp ? 'bg-blue-600' : ''"
+          class="px-6 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-900 rounded-md hover:bg-blue-500"
+        >
+          Verified Parts
+        </button>
+        <button
+          x-on:click="diag = !diag"
+          x-bind:class="diag ? 'bg-blue-600' : ''"
+          class="px-6 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-900 rounded-md hover:bg-blue-500"
+        >
+          Verified Diagnostic Time
+        </button>
+        <br /><br />
+
+        <div class="grid gap-6 mb-6 md:grid-cols-4">
+          <form x-on:submit.prevent>
+            <div class="relative">
+              <input
+                type="text"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                x-model="addressable"
+                placeholder="Adressable ..."
+              />
+              <button
+                class="text-white absolute right-2.5 bottom-1.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-1 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                x-on:click="auths.push(addressable)"
+              >
+                Add
+              </button>
+            </div>
+          </form>
+          <form x-on:submit.prevent>
+            <div class="relative">
+              <input
+                type="text"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                x-model="notAddressable"
+                placeholder="Denied ..."
+              />
+              <button
+                class="text-white absolute right-2.5 bottom-1.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-1 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                x-on:click="denys.push(notAddressable)"
+              >
+                Add
+              </button>
+            </div>
+          </form>
+          <form x-on:submit.prevent>
+            <div class="relative">
+              <input
+                type="text"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                x-model="dreasons"
+                placeholder="Reason ..."
+              />
+              <button
+                class="text-white absolute right-2.5 bottom-1.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-1 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                x-on:click="reasons.push(dreasons)"
+              >
+                Add
+              </button>
+            </div>
+          </form>
+          <form>
+            <input
+              type="text"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              x-model="rental"
+              placeholder="Rental ..."
+            />
+          </form>
+          <form>
+            <input
+              type="text"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              x-model="caller"
+              placeholder="Caller ..."
+            />
+          </form>
+          <form>
+            <input
+              type="text"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              x-model="an"
+              placeholder="Note ..."
+            />
+          </form>
+          <form>
+            <input
+              type="text"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              x-model="laborG"
+              placeholder="Labor Guide ..."
+            />
+          </form>
+          <form>
+            <input
+              type="text"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              x-model="partG"
+              placeholder="Parts Guide ..."
+            />
+          </form>
+        </div>
+
+        <div class="mb-0">
+          *******AUTHORIZATION SUMMARY*******<br />Addressable:
+        </div>
+        <template class="mt-0" x-for="auth in auths"
+          ><span>- <span x-text="auth"></span></span
+        ></template>
+        <div>Not Addressable:</div>
+        <template x-for="deny in denys">
+          <ul>
+            <li>&nbsp;&nbsp;&nbsp;&nbsp;- <span x-text="deny"></span></li>
+          </ul>
+        </template>
+        <div>Denial Reason/Exclusion:</div>
+        <template x-for="reason in reasons">
+          <ul>
+            <li>&nbsp;&nbsp;&nbsp;&nbsp;- <span x-text="reason"></span></li>
+          </ul>
+        </template>
+        <div>Rental: <span x-text="rental"></span></div>
+        <div>Adjusters Note:</div>
+        <ul>
+          <li>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Spoke with
+            <span x-text="caller"></span> <span x-text="an"></span>
+          </li>
+          <li x-show.transition.duration.1000ms="dccc" x-cloak>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Documented all
+            CCC's reported & labor and parts requested.
+          </li>
+          <li x-show.transition.duration.1000ms="ccmt">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- I asked and repair
+            facility reports no signs of modifications, collision damage, towing
+            beyond capacity or signs of commercial use including ride services.
+          </li>
+          <li x-show.transition.duration.1000ms="vl">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Verified labor
+            times per account guidelines in <span x-text="laborG"></span>
+          </li>
+          <li x-show.transition.duration.1000ms="diag">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Allowed diagnostic
+            time per Assurant's Diagnostic Time SOP.
+          </li>
+          <li x-show.transition.duration.1000ms="vp">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Parts pricing
+            verified in <span x-text="partG"></span>
+          </li>
+          <li>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Verified failures
+            not covered under any Powertrain or CPO Warranty, Manufacturer
+            Recalls or repairer's warranty for a previously approved claim.
+          </li>
+          <li>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Labor, parts and
+            repairs within account guidelines & addressable per account holder's
+            agreement terms & conditions.
+          </li>
+          <li>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Repair facility
+            will call back if anything else is needed.
+          </li>
+        </ul>
+        <div>Authorization provided to: <span x-text="caller"></span></div>
+        <div>Approved Totals:</div>
+      </div>
+      <!--Deny-->
+      <div
+        id="deny"
+        x-show="showDeny"
+        x-data="{
+            denials: [],
+            reasons: [],
+            notAddressable: '',
+            dreasons: '',
+            caller: '',
+            reviewer: ''
+        }"
+      >
+        <div class="grid gap-6 mb-6 md:grid-cols-4">
+          <form x-on:submit.prevent>
+            <div class="relative">
+              <input
+                type="text"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                x-model="notAddressable"
+                placeholder="Denied ..."
+              />
+              <button
+                class="text-white absolute right-2.5 bottom-1.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-1 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                x-on:click="denials.push(notAddressable)"
+              >
+                Add
+              </button>
+            </div>
+          </form>
+
+          <form x-on:submit.prevent>
+            <div class="relative">
+              <input
+                type="text"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                x-model="dreasons"
+                placeholder="Reason ..."
+              />
+              <button
+                class="text-white absolute right-2.5 bottom-1.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-1 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                x-on:click="reasons.push(dreasons)"
+              >
+                Add
+              </button>
+            </div>
+          </form>
+          <form>
+            <input
+              type="text"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              x-model="caller"
+              placeholder="Caller ..."
+            />
+          </form>
+          <form>
+            <input
+              type="text"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              x-model="reviewer"
+              placeholder="Reviewer ..."
+            />
+          </form>
+        </div>
+        <p><br /></p>
+        <p><br /></p>
+
+        <div>*******DENIED SUMMARY*******</div>
+        <br />
+        <div>Component Denied:</div>
+        <template x-for="deny in denials">
+          <ul class="ml-10">
+            <li x-text="deny"></li>
+          </ul>
+        </template>
+        <div>Denial Reason / Exclusion:</div>
+        <template x-for="reason in reasons">
+          <ul class="ml-10">
+            <li x-text="reason"></li>
+          </ul>
+        </template>
+        <div>Adjuster's Note:</div>
+        <ul class="ml-10">
+          <li>
+            - Spoke with <span x-text="caller"></span> at the repair facility,
+            documented all CCC's reported & labor and parts requested.
+          </li>
+          <li>
+            - I asked and repair facility reports no signs of modifications,
+            collision damage, towing beyond capacity or signs of commercial use
+            including ride services.
+          </li>
+          <li>
+            - Verified repairs and parts are not covered on the account holder's
+            agreement per exclusions listed above.
+          </li>
+          <li>- Repair facility will call back if anything else is needed.</li>
+        </ul>
+        <div>Denial Reviewed by: <span x-text="reviewer"></span></div>
+        <div>Explained to: <span x-text="caller"></span> @ RF</div>
+      </div>
+
+      <div
+        id="inquiry"
+        x-show="showInquiry"
+        x-data="{
+            caller: '',
+            an: '',
+            advise: '',
+            need: '',
+            nStep: '',
+            eta: ''
+        }"
+      >
+        <div class="grid gap-6 mb-6 md:grid-cols-3">
+          <form>
+            <input
+              type="text"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              x-model="caller"
+              placeholder="Caller ..."
+            />
+          </form>
+          <form>
+            <input
+              type="text"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              x-model="nStep"
+              placeholder="Who takes next step ..."
+            />
+          </form>
+          <form>
+            <input
+              type="text"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              x-model="eta"
+              placeholder="ETA ..."
+            />
+          </form>
+        </div>
+        <div class="grid gap-6 mb-6 md:grid-cols-3">
+          <form>
+            <input
+              type="text"
+              id="large-input"
+              class="block p-4 w-full text-gray-900 bg-gray-50 rounded-lg border border-gray-300 sm:text-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              x-model="an"
+              placeholder="Adjuster Note ..."
+            />
+          </form>
+          <form>
+            <input
+              type="text"
+              id="large-input"
+              class="block p-4 w-full text-gray-900 bg-gray-50 rounded-lg border border-gray-300 sm:text-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              x-model="advise"
+              placeholder="Response ..."
+            />
+          </form>
+          <form>
+            <input
+              type="text"
+              id="large-input"
+              class="block p-4 w-full text-gray-900 bg-gray-50 rounded-lg border border-gray-300 sm:text-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              x-model="need"
+              placeholder="What is needed ..."
+            />
+          </form>
+        </div>
+        <div>
+          <p><br /></p>
+          <p><br /></p>
+          <div>*****PENDING SUMMARY*****</div>
+          <div>Who called: <span x-text="caller"></span></div>
+          <div>What was their inquiry: <span x-text="an"></span></div>
+          <div>What was advised to caller: <span x-text="advise"></span></div>
+          <div>What is needed: <span x-text="need"></span></div>
+          <div>Who takes next step: <span x-text="nStep"></span></div>
+          <div>Expected time frame: <span x-text="eta"></span></div>
+        </div>
+      </div>
+
+      <div
+        id="ol"
+        x-show="showOL"
+        x-data="{
+            claimNum: '',
+            an: '',
+            ammount: ''
+        }"
+      >
+        <div class="grid gap-6 mb-6 md:grid-cols-2">
+          <form>
+            <input
+              type="text"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              x-model="claimNum"
+              placeholder="Claim Number ..."
+            />
+          </form>
+          <form>
+            <input
+              type="text"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              x-model="ammount"
+              placeholder="Ammount ..."
+            />
+          </form>
+        </div>
+        <form>
+          <input
+            type="text"
+            id="large-input"
+            class="block p-4 w-full text-gray-900 bg-gray-50 rounded-lg border border-gray-300 sm:text-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            x-model="an"
+            placeholder="Adjuster Note ..."
+          />
+        </form>
+        <p><br /></p>
+        <p><br /></p>
+        <div>
+          Over Limit Auth. Needed Claim # <span x-text="claimNum"></span> Please
+          & Thank You
+        </div>
+        <br />
+        <div><span x-text="an"></span></div>
+        <br />
+        <ul class="ml-10">
+          <li>- Amount of Claim Before: <span x-text="ammount"></span></li>
+          <li>- Within LoL</li>
+          <li>- No other warranties</li>
+          <li>- Comment Already in System</li>
+        </ul>
+      </div>
+
+      <div
+        id="reAuth"
+        x-show="showReAuth"
+        x-data="{
+            claimNum: '',
+            an: '',
+            oldAmmount: '',
+            newAmmount: ''
+        }"
+      >
+        <div class="grid gap-6 mb-6 md:grid-cols-3">
+          <form>
+            <input
+              type="text"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              x-model="claimNum"
+              placeholder="Claim Number ..."
+            />
+          </form>
+          <form>
+            <input
+              type="text"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              x-model="oldAmmount"
+              placeholder="Old Ammount ..."
+            />
+          </form>
+          <form>
+            <input
+              type="text"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              x-model="newAmmount"
+              placeholder="New Ammount ..."
+            />
+          </form>
+        </div>
+        <form>
+          <input
+            type="text"
+            id="large-input"
+            class="block p-4 w-full text-gray-900 bg-gray-50 rounded-lg border border-gray-300 sm:text-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            x-model="an"
+            placeholder="Adjuster Note ..."
+          />
+        </form>
+        <p><br /></p>
+        <p><br /></p>
+        <div>
+          Over Limit Auth. Needed Claim # <span x-text="claimNum"></span> Please
+          & Thank You
+        </div>
+        <br />
+        <div><span x-text="an"></span></div>
+        <br />
+        <ul class="ml-10">
+          <li>- Amount of Claim Before: <span x-text="oldAmmount"></span></li>
+          <li>- Amount of Claim Now: <span x-text="newAmmount"></span></li>
+          <li>- Does not exceed 10% limit for Review</li>
+          <li>- Within LoL</li>
+          <li>- No other warranties</li>
+          <li>- Comment Already in System</li>
+        </ul>
+      </div>
+
+      <div
+        id="pr"
+        x-show="showPR"
+        x-data="{
+            caller: '', 
+            claimDate: '',
+            an: ''
+        }"
+      >
+        <div class="grid gap-6 mb-6 md:grid-cols-2">
+          <form>
+            <input
+              type="text"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              x-model="caller"
+              placeholder="Caller ..."
+            />
+          </form>
+          <div class="relative">
+            <div
+              class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none"
+            >
+              <svg
+                aria-hidden="true"
+                class="w-5 h-5 text-gray-500 dark:text-gray-400"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                  clip-rule="evenodd"
+                ></path>
+              </svg>
+            </div>
+            <input
+              datepicker
+              type="text"
+              class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              x-model="claimDate"
+              placeholder="Select date"
+            />
+          </div>
+        </div>
+        <div>*****PENDING SUMMARY*****</div>
+        <br />
+        <div>
+          What is completed on claim: Spoke with
+          <span x-text="caller"></span> at the repair facility calling in to
+          check claim status. I reviewed claim comments/notes and explained that
+          the Claim is still being reviewed.
+        </div>
+        <div>
+          What is needed: Claim to be reviewed by the review team - sent to
+          review team via FE adjuster queue Claim documented was sent for review
+          on <span x-text="claimDate"></span>.
+        </div>
+        <div>Who takes next step: Review team</div>
+        <div>Expected Time frame: 24 - 48 hours</div>
+      </div>
+
+      <div
+        id="sr"
+        x-show="showSR"
+        x-data="{
+            caller: '',
+            reason: 'Over Limit',
+            nStep: 'FE Review',
+            eta: '24 - 48 hours'
+        }"
+      >
+        <div class="grid gap-6 mb-6 md:grid-cols-4">
+          <form>
+            <input
+              type="text"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              x-model="caller"
+              placeholder="Caller ..."
+            />
+          </form>
+          <form>
+            <input
+              type="text"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              x-model="nStep"
+              placeholder="Who takes next step ..."
+            />
+          </form>
+          <form>
+            <input
+              type="text"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              x-model="eta"
+              placeholder="ETA ..."
+            />
+          </form>
+          <form>
+            <input
+              type="text"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              x-model="reason"
+              placeholder="Reason for Review ..."
+            />
+          </form>
+        </div>
+        <div>*****PENDING SUMMARY*****</div>
+        <br />
+        <div>
+          What is completed on claim: Spoke with
+          <span x-text="caller"></span> at the repair facility, documented all
+          CCC's reported & labor and parts requested.
+        </div>
+        <ul class="ml-10">
+          <li>
+            - I asked and repair facility reports no signs of modifications,
+            collision damage, towing beyond capacity or signs of commercial use
+            including ride services.
+          </li>
+          <li>- Verified labor time per account guidelines in Alldata</li>
+          <li>- Verified Parts in C&K</li>
+          <li>- Allowed diagnostic time per Assurant's Diagnostic Time SOP.</li>
+          <li>
+            - Verified failures not covered under any Powertrain or CPO
+            Warranty, Manufacturer Recalls or repairer's warranty for a
+            previously approved claim.
+          </li>
+          <li>
+            - Labor, parts and repairs within account guidelines & addressable
+            per AH agreement terms.
+          </li>
+          <li>
+            - What is needed: Claim to be reviewed by the review team due to
+            <span x-text="reason"></span>
+          </li>
+        </ul>
+        <div>Who takes next step: <span x-text="nStep"></span></div>
+        <div>
+          Expected Time frame: <span x-text="eta"></span> - explained if they
+          have not heard back from us by then, to please give us a call back.
+        </div>
+      </div>
+
+      <div
+        id="tb"
+        x-show="showTB"
+        x-data="{
+            caller: '',
+            dist: '',
+            atRF: 'Yes'
+        }"
+      >
+        <div class="grid gap-6 mb-6 md:grid-cols-3">
+          <form>
+            <input
+              type="text"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              x-model="caller"
+              placeholder="Caller ..."
+            />
+          </form>
+          <form>
+            <input
+              type="text"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              x-model="dist"
+              placeholder="Miles ..."
+            />
+          </form>
+          <form>
+            <input
+              type="text"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              x-model="atRF"
+              placeholder="Is vehicle @ RF ..."
+            />
+          </form>
+        </div>
+        <div>********CLOSED BUT NOT DENIED SUMMARY*******</div>
+        <br />
+        <div>
+          Why claim was closed: Tieback Applies - per google maps, current RF is
+          <span x-text="dist"></span> miles from selling dealer.
+        </div>
+        <div>
+          What’s completed: Documented CCC's, verified NO MCCT, verified
+          parts/labor would be addressable per the customer's agreement.
+        </div>
+        <div>
+          Who takes next step: The Account Holder. -- I advised
+          <span x-text="caller"></span> of tieback. The account holder is to
+          take the unit back to selling dealer to have repairs completed.
+        </div>
+        <div>Is the vehicle at the shop: <span x-text="atRF"></span></div>
+      </div>
+    </div>
+    <div class="w-full fixed bottom-0">
+      <footer
+        class="flex flex-col items-center justify-between p-6 bg-white dark:bg-gray-900 sm:flex-row"
+      >
+        <a
+          href="#"
+          class="text-xl font-bold text-gray-600 transition-colors duration-300 dark:text-white hover:text-gray-700 dark:hover:text-gray-300"
+          >Assurant Automotive Claims</a
+        >
+
+        <p class="text-sm text-gray-600 dark:text-gray-300">
+          © Copyright 2022. All Rights Reserved.
+        </p>
+
+        <div class="flex -mx-2">
+          <a
+            href="#"
+            class="mx-2 text-gray-600 transition-colors duration-300 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+            aria-label="Reddit"
+            >Made by: Chris Norton
+          </a>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
